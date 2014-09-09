@@ -8,7 +8,7 @@
 
 module.exports = function (app) {
     app.get('/', function (req,res) {
-        res.render('index')
+        res.render('index',{cart_count:req.session.cart.length})
     });
     app.get('/product_list', function (req,res) {
         Product.get(null, function (err,products) {
@@ -94,7 +94,7 @@ module.exports = function (app) {
             }
             var cart_bill=get_cart_products_bill(count_cart_products_number(req.session.cart),products);
             var cart_bill_detail=get_cart_products_price_bill(cart_bill);
-            res.render('shopping_list',{cart_count:req.session.cart.length,cart_bill:cart_bill_detail,total_price:get_total_price(cart_bill_detail),promotion_price:get_promotion_price(cart_bill_detail)});
+            res.render('shopping_list',{cart_count:req.session.cart.length,cart_bill:cart_bill_detail,total_price:get_total_price(cart_bill_detail),promotion_price:get_promotion_price(cart_bill_detail),time_now:get_time_now()});
         });
     });
     app.get('/clear_cart', function (req,res) {
@@ -209,3 +209,13 @@ function get_promotion_price(cart_bill_detail) {
     }
     return promotion_price;
 }
+
+function get_time_now(){
+    var time_now=new Date();
+    var day=time_now.getDate();
+    var month=time_now.getMonth()+1;
+    var year=time_now.getFullYear();
+    var time=time_now.toString().substr(16,8);
+    return year+'年'+month+'月'+day+'日'+time;
+};
+
