@@ -37,17 +37,10 @@
                 <td><%=product.name%></td>
                 <td><%=product.price%></td>
                 <td><%=product.unit%></td>
-                <td><a class="btn btn-primary"  onclick="add_product_to_cart('<%= product.barcode%>');">加入购物车</a></td>
+                <td><a class="btn btn-primary"  onclick="add_goods_to_cart('<%= product.barcode%>');">加入购物车</a></td>
             </tr>
             <% })%>
         </table>
     </div>
 </div>
-<script type="application/javascript">
-    function add_product_to_cart(barcode) {
-        $.get('/add_to_cart/'+barcode+'', function (data) {
-            document.getElementById('cart_count').innerText='购物车('+data.cart_count+')';
-        });
-    };
-</script>
 <%- include footer%>

@@ -5,7 +5,7 @@
 
 
  var Product=require('../models/product.js');
-
+ var Cart=require('../models/cart.js');
 module.exports = function (app) {
     app.get('/', function (req,res) {
         res.render('index',{cart_count:req.session.cart.length})
@@ -36,14 +36,13 @@ module.exports = function (app) {
         });
     });
     app.get('/cart', function (req,res) {
-        sort_cart(req.session.cart);
+        Cart.sort_cart(req.session.cart);
         Product.get(null, function (err,products) {
             if(err){
                 products=[];
             }
          var cart_bill=get_cart_products_bill(count_cart_products_number(req.session.cart),products);
             var cart_bill_detail=get_cart_products_price_bill(cart_bill);
-            console.log(cart_bill_detail)
             res.render('cart',{cart_count:req.session.cart.length,cart_bill:cart_bill_detail,total_price:get_total_price(cart_bill_detail)});
         });
     });
@@ -53,14 +52,14 @@ module.exports = function (app) {
             req.session.cart=[];
         }
         req.session.cart.push(req.params.barcode);
-        sort_cart(req.session.cart);
+        Cart.sort_cart(req.session.cart);
         Product.get(null, function (err,products) {
             if(err){
                 products=[];
             }
             var cart_bill=get_cart_products_bill(count_cart_products_number(req.session.cart),products);
             var cart_bill_detail=get_cart_products_price_bill(cart_bill);
-            var product_update_price=find_update_product_info(req.params.barcode,cart_bill_detail).showPrice;
+            var product_update_price=get_update_product_info(req.params.barcode,cart_bill_detail).showPrice;
             res.send({cart_count:req.session.cart.length,update_price:product_update_price,total_price:get_total_price(cart_bill_detail)});
         });
 
@@ -75,19 +74,19 @@ module.exports = function (app) {
                 break;
             }
         }
-        sort_cart(req.session.cart);
+        Cart.sort_cart(req.session.cart);
         Product.get(null, function (err,products) {
             if(err){
                 products=[];
             }
             var cart_bill=get_cart_products_bill(count_cart_products_number(req.session.cart),products);
             var cart_bill_detail=get_cart_products_price_bill(cart_bill);
-            var product_update_price=find_update_product_info(req.params.barcode,cart_bill_detail).showPrice;
+            var product_update_price=get_update_product_info(req.params.barcode,cart_bill_detail).showPrice;
             res.send({cart_count:req.session.cart.length,update_price:product_update_price,total_price:get_total_price(cart_bill_detail)});
         });
     });
     app.get('/shopping_list', function (req,res) {
-        sort_cart(req.session.cart);
+        Cart.sort_cart(req.session.cart);
         Product.get(null, function (err,products) {
             if(err){
                 products=[];
@@ -103,17 +102,6 @@ module.exports = function (app) {
     })
 }
 
-function sort_cart(cart) {
-    for(var i=0;i<cart.length-1;i++){
-        for(var j=i+1;j<cart.length;j++){
-            if(cart[i][9]>cart[j][9]){
-                var middle=cart[j];
-                cart[j]=cart[i];
-                cart[i]=middle;
-            }
-        }
-    }
-}
 function count_cart_products_number(cart_products) {
     var products_number={};
     for(var i=0;i<cart_products.length;i++){
@@ -181,7 +169,7 @@ function countNormalGood(normalGood) {
     normalGood.showPrice=normalGood.totalPrice+'元';
     normalGood.isPromtional=false;
 }
-function find_update_product_info(barcode,cart_bill_detail) {
+function get_update_product_info(barcode,cart_bill_detail) {
     for(var i=0;i<cart_bill_detail.length;i++){
         if(barcode==cart_bill_detail[i].barcode){
             return cart_bill_detail[i];
