@@ -2,6 +2,8 @@ function Time() {
 
 }
 
+module.exports=Time;
+
 Time.get_time_now=function (){
     var time_now=new Date();
     var day=time_now.getDate();

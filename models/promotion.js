@@ -2,7 +2,9 @@ function Promotion() {
 
 }
 
-Promotion.isPromtional= function (barcode,barcodes) {
+module.exports=Promotion;
+
+Promotion.isPromotional= function (barcode,barcodes) {
     for(var i in barcodes){
         if(barcode==barcodes[i]){
             return true;
@@ -29,12 +31,5 @@ Promotion.countNormalGood=function (normalGood) {
     normalGood.isPromtional=false;
 };
 
-Promotion.get_update_product_info=function (barcode,cart_bill_detail) {
-    for(var i=0;i<cart_bill_detail.length;i++){
-        if(barcode==cart_bill_detail[i].barcode){
-            return cart_bill_detail[i];
-        }
-    }
-    return {showPrice:0+'元'}
-};
+
 

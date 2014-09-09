@@ -3,6 +3,8 @@ function Cart() {
 }
 
 module.exports=Cart;
+var Promotion=require('./promotion');
+
 Cart.sort_cart= function (cart) {
     for(var i=0;i<cart.length-1;i++){
         for(var j=i+1;j<cart.length;j++){
@@ -50,11 +52,11 @@ Cart.get_cart_products_price_bill= function (bill){
         'ITEM000005'
     ];
     for(var i=0;i<bill.length;i++){
-        if(isPromotional(bill[i].barcode,promotionalGoods)){
-            countPromotionalGood(bill[i]);
+        if(Promotion.isPromotional(bill[i].barcode,promotionalGoods)){
+            Promotion.countPromotionalGood(bill[i]);
         }
         else{
-            countNormalGood(bill[i]);
+            Promotion.countNormalGood(bill[i]);
         }
     }
     return bill;
@@ -63,7 +65,7 @@ Cart.get_cart_products_price_bill= function (bill){
 Cart.get_total_price= function (cart_bill_detail) {
     var total_price=0;
     var promotion_price=0;
-    for(key in cart_bill_detail){
+    for(var key in cart_bill_detail){
         total_price +=cart_bill_detail[key].totalPrice;
         if(cart_bill_detail[key].isPromtional){
             promotion_price+=cart_bill_detail[key].promotionNumber*cart_bill_detail[key].price;
@@ -74,10 +76,19 @@ Cart.get_total_price= function (cart_bill_detail) {
 
 Cart.get_promotion_price=function(cart_bill_detail) {
     var promotion_price=0;
-    for(key in cart_bill_detail){
+    for(var key in cart_bill_detail){
         if(cart_bill_detail[key].isPromtional){
             promotion_price+=cart_bill_detail[key].promotionNumber*cart_bill_detail[key].price;
         }
     }
     return promotion_price;
+};
+
+Cart.get_update_product_info=function (barcode,cart_bill_detail) {
+    for(var i=0;i<cart_bill_detail.length;i++){
+        if(barcode==cart_bill_detail[i].barcode){
+            return cart_bill_detail[i];
+        }
+    }
+    return {showPrice:0+'元'}
 };
