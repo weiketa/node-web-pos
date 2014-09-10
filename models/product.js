@@ -62,4 +62,3 @@ Product.get= function (name,callback) {
     })
 }
 
-Product

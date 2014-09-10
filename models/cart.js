@@ -4,6 +4,7 @@ function Cart() {
 
 module.exports=Cart;
 var Promotion=require('./promotion');
+var _=require('underscore');
 
 Cart.sort_cart= function (cart) {
     for(var i=0;i<cart.length-1;i++){
@@ -17,31 +18,17 @@ Cart.sort_cart= function (cart) {
     }
 };
 
-Cart.count_cart_products_number= function (cart_products){
-    var products_number={};
-    for(var i=0;i<cart_products.length;i++){
-        if(!(cart_products[i] in products_number)){
-            products_number[cart_products[i]]=0;
-            for(var j=0;j<cart_products.length;j++){
-                if(cart_products[i]==cart_products[j]){
-                    products_number[cart_products[i]]++;
-                }
-            }
-        }
-    }
-    return products_number;
-};
-
-Cart.get_cart_products_bill= function (products_number,products) {
+Cart.get_cart_products_bill= function (cart_products,products) {
     var cart_products_bill=[];
-    for(var key in products_number){
-        for(var i=0;i<products.length;i++){
-            if(key==products[i].barcode){
-                products[i].number=products_number[key];
-                cart_products_bill.push(products[i]);
+    var products_number=_.countBy(cart_products);
+    _.each(products_number, function (value,key) {
+        _.each(products, function (element,index) {
+            if(key==products[index].barcode){
+                products[index].number=products_number[key];
+                cart_products_bill.push(products[index]);
             }
-        }
-    }
+        })
+    });
     return cart_products_bill;
 };
 
@@ -51,36 +38,35 @@ Cart.get_cart_products_price_bill= function (bill){
         'ITEM000001',
         'ITEM000005'
     ];
-    for(var i=0;i<bill.length;i++){
-        if(Promotion.isPromotional(bill[i].barcode,promotionalGoods)){
-            Promotion.countPromotionalGood(bill[i]);
+    _.each(bill, function (element) {
+        if(Promotion.isPromotional(element.barcode,promotionalGoods)){
+            Promotion.countPromotionalGood(element);
+        }else{
+            Promotion.countNormalGood(element);
         }
-        else{
-            Promotion.countNormalGood(bill[i]);
-        }
-    }
+    });
     return bill;
 };
 
 Cart.get_total_price= function (cart_bill_detail) {
     var total_price=0;
     var promotion_price=0;
-    for(var key in cart_bill_detail){
-        total_price +=cart_bill_detail[key].totalPrice;
-        if(cart_bill_detail[key].isPromtional){
-            promotion_price+=cart_bill_detail[key].promotionNumber*cart_bill_detail[key].price;
+    _.each(cart_bill_detail, function (element) {
+        total_price +=element.totalPrice;
+        if(element.isPromotional){
+            promotion_price+=element.promotionNumber*element.price;
         }
-    }
+    })
     return total_price-promotion_price;
 };
 
 Cart.get_promotion_price=function(cart_bill_detail) {
     var promotion_price=0;
-    for(var key in cart_bill_detail){
-        if(cart_bill_detail[key].isPromtional){
-            promotion_price+=cart_bill_detail[key].promotionNumber*cart_bill_detail[key].price;
+    _.each(cart_bill_detail, function (element) {
+        if(element.isPromotional){
+            promotion_price+=element.promotionNumber*element.price;
         }
-    }
+    })
     return promotion_price;
 };
 

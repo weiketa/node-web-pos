@@ -7,6 +7,7 @@
  var Product=require('../models/product.js');
  var Cart=require('../models/cart.js');
  var Time=require('../models/time.js');
+
 module.exports = function (app) {
     app.get('/', function (req,res) {
         res.render('index',{cart_count:req.session.cart.length})
@@ -42,7 +43,7 @@ module.exports = function (app) {
             if(err){
                 products=[];
             }
-         var cart_bill=Cart.get_cart_products_bill(Cart.count_cart_products_number(req.session.cart),products);
+         var cart_bill=Cart.get_cart_products_bill(req.session.cart,products);
             var cart_bill_detail=Cart.get_cart_products_price_bill(cart_bill);
             res.render('cart',{cart_count:req.session.cart.length,cart_bill:cart_bill_detail,total_price:Cart.get_total_price(cart_bill_detail)});
         });
@@ -58,7 +59,7 @@ module.exports = function (app) {
             if(err){
                 products=[];
             }
-            var cart_bill=Cart.get_cart_products_bill(Cart.count_cart_products_number(req.session.cart),products);
+            var cart_bill=Cart.get_cart_products_bill(req.session.cart,products);
             var cart_bill_detail=Cart.get_cart_products_price_bill(cart_bill);
             var product_update_price=Cart.get_update_product_info(req.params.barcode,cart_bill_detail).showPrice;
             res.send({cart_count:req.session.cart.length,update_price:product_update_price,total_price:Cart.get_total_price(cart_bill_detail)});
@@ -80,7 +81,7 @@ module.exports = function (app) {
             if(err){
                 products=[];
             }
-            var cart_bill=Cart.get_cart_products_bill(Cart.count_cart_products_number(req.session.cart),products);
+            var cart_bill=Cart.get_cart_products_bill(req.session.cart,products);
             var cart_bill_detail=Cart.get_cart_products_price_bill(cart_bill);
             var product_update_price=Cart.get_update_product_info(req.params.barcode,cart_bill_detail).showPrice;
             res.send({cart_count:req.session.cart.length,update_price:product_update_price,total_price:Cart.get_total_price(cart_bill_detail)});
@@ -92,7 +93,7 @@ module.exports = function (app) {
             if(err){
                 products=[];
             }
-            var cart_bill=Cart.get_cart_products_bill(Cart.count_cart_products_number(req.session.cart),products);
+            var cart_bill=Cart.get_cart_products_bill(req.session.cart,products);
             var cart_bill_detail=Cart.get_cart_products_price_bill(cart_bill);
             res.render('shopping_list',{cart_count:req.session.cart.length,cart_bill:cart_bill_detail,total_price:Cart.get_total_price(cart_bill_detail),promotion_price:Cart.get_promotion_price(cart_bill_detail),time_now:Time.get_time_now()});
         });

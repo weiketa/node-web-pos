@@ -17,7 +17,7 @@ Promotion.countPromotionalGood= function (promotionalGood){
     promotionalGood.promotionNumber=parseInt(promotionalGood.number/3);
     promotionalGood.totalPrice=promotionalGood.number*promotionalGood.price;
     promotionalGood.promotionPrice=promotionalGood.totalPrice-promotionalGood.promotionNumber*promotionalGood.price;
-    promotionalGood.isPromtional=true;
+    promotionalGood.isPromotional=true;
     if(promotionalGood.number>=3){
         promotionalGood.showPrice=promotionalGood.promotionPrice+'元'+'(原价：'+promotionalGood.totalPrice+'元)';
         return;
@@ -28,7 +28,7 @@ Promotion.countPromotionalGood= function (promotionalGood){
 Promotion.countNormalGood=function (normalGood) {
     normalGood.totalPrice=normalGood.number*normalGood.price;
     normalGood.showPrice=normalGood.totalPrice+'元';
-    normalGood.isPromtional=false;
+    normalGood.isPromotional=false;
 };
 
 
