@@ -102,6 +102,10 @@ module.exports = function (app) {
         req.session.cart=[];
         res.redirect('product_list');
     })
+    ;
+    app.get('/admin', function (req,res) {
+        res.render('admin/product_manage')
+    })
 };
 
 
